@@ -1,7 +1,8 @@
 import { rmSync } from 'fs'
 import path from 'path'
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import vuePlugin from "@vitejs/plugin-vue";
+import vueJsxPlugin from "@vitejs/plugin-vue-jsx";
 import electron from 'vite-plugin-electron'
 
 rmSync('dist', { recursive: true, force: true }) // v14.14.0
@@ -9,7 +10,8 @@ rmSync('dist', { recursive: true, force: true }) // v14.14.0
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        vue(),
+        vuePlugin(),
+        vueJsxPlugin(),
         electron({
             main: {
                 entry: 'electron/main/index.ts',
@@ -39,7 +41,19 @@ export default defineConfig({
             renderer: {},
         }),
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve('src')
+        }
+    },
     server: {
         port: 8099
+    },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                additionalData: `@import "@/styles/var.scss"; @import "@/styles/mixin.scss";`
+            }
+        }
     }
 })
